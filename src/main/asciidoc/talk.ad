@@ -1,0 +1,33 @@
+= Introducción a Refactoring
+:icons: font
+:twitter-tag: ACCSA
+:conference-tag:
+:talk-tag: Intro Refactoring
+:linkattrs:
+
+include::footer.ad[]
+
+[NOTE.speaker]
+====
+Contenido de la presentación:
+
+*	Secciones teóricas:
+**	Fundamentos. ¿Por qué usar test unitarios? Refactoring. Buenas prácticas. Niveles de test/Requisitos, Code coverage.
+**	Testing doubles. Manejo de dependencias. Dummies, Stubs, Fakes, Spies, Mocks. Prácticas recomendadas.
+*	TDD. Prácticas para mejorar los test. Red-Green-Refactor cycle. Ventajas y Desventajas.
+*	Secciones prácticas:
+**	Herramientas. JUnit – Annotations / Lifecycle. Prácticas. Mockito/Powermock. Hamcrest/Assertj.
+**	TDD Kata.
+
+====
+
+== Contenido
+* Fundamentos
+* Testing doubles
+* TDD
+* Herramientas
+
+== ¿Por qué escribimos tests? icon:lightbulb[]
+
+
+include::self.ad[]
