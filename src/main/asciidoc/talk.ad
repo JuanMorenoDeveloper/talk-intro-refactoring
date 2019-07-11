@@ -11,23 +11,47 @@ include::footer.ad[]
 ====
 Contenido de la presentación:
 
-*	Secciones teóricas:
-**	Fundamentos. ¿Por qué usar test unitarios? Refactoring. Buenas prácticas. Niveles de test/Requisitos, Code coverage.
-**	Testing doubles. Manejo de dependencias. Dummies, Stubs, Fakes, Spies, Mocks. Prácticas recomendadas.
-*	TDD. Prácticas para mejorar los test. Red-Green-Refactor cycle. Ventajas y Desventajas.
-*	Secciones prácticas:
-**	Herramientas. JUnit – Annotations / Lifecycle. Prácticas. Mockito/Powermock. Hamcrest/Assertj.
-**	TDD Kata.
+* Secciones teóricas:
+**  Razones para cambiar un sofware.
+**  Testing
+**  Algoritmo para cambiar código legacy
+**  Herramientas
+**  Sprout Method
+**  Sprout Class
+**  Wrap Method
+**  Wrap Class
+* Sección práctica:
+**  Sprout Method
+**  Sprout Class
 
 ====
 
 == Contenido
 * Fundamentos
-* Testing doubles
-* TDD
+* ¿Como cambiar código legacy?
 * Herramientas
+* Técnicas
 
-== ¿Por qué escribimos tests? icon:lightbulb[]
+== Todos tenemos buenas intenciones
+
+== !
+
+image::good-intentions1.jpg[background, size=auto]
+//Fuente: http://kfaday.blogspot.com/2016/01/la-vida-de-un-ingeniero-de-sistemas.html
+
+== Pero...
+
+== !
+
+image::good-intentions2.jpg[background, size=auto]
+
+== ¿Qué es código legacy? icon:lightbulb[]
+
+* ¿Código de "otros"?
+* ¿Código díficil de entender?
+* ¿Código díficil de mantener?
+* ...
+
 
 
 include::self.ad[]
