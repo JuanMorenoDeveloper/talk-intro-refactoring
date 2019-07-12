@@ -39,45 +39,59 @@ document.getElementsByTagName( 'head' )[0].appendChild( link );</script><!--[if 
 <section id="_qué_es_código_legacy"><h2>¿Qué es código legacy? <span class="icon"><i class="fa fa-lightbulb"></i></span></h2><div class="ulist"><ul><li><p>¿Código de "otros"?</p></li><li><p>¿Código díficil de entender?</p></li><li><p>¿Código díficil de mantener?</p></li><li><p>&#8230;&#8203;</p></li></ul></div></section>
 <section><div class="quoteblock"><blockquote><div class="paragraph"><p>Código legacy es código sin tests.</p></div></blockquote></div>
 <div class="quoteblock"><blockquote><div class="paragraph"><p>(2004) M. Feather</p></div></blockquote></div>
-<aside class="notes"><div class="paragraph"><p>Code without tests is bad code. It doesn’t matter how well written it is; it doesn’t matter how pretty or object-oriented or well-encapsulated it is. With tests, we can change the behavior of our code quickly and verifiably. Without them, we really don’t know if our code is getting better or worse.</p></div></aside></section>
+<aside class="notes"><div class="paragraph"><p>Código sin pruebas es código malo (bad code). No importa lo bien escrito que esté; no importa lo bonito que esté u orientado a objetos o bien encapsulado. Con las pruebas, podemos cambiar el comportamiento de nuestro código de forma rápida y verificable. Sin ellos, realmente no sabemos si nuestro código está mejorando o empeorando.</p></div></aside></section>
 <section id="_razones_para_cambiar_un_software"><h2>Razones para cambiar un software</h2><div class="olist arabic"><ol class="arabic"><li><p>Agregar una feature</p></li><li><p>Reparar un bug</p></li><li><p>Mejorar el diseño</p></li><li><p>Optimizar el uso de recursos</p></li></ol></div>
-<aside class="notes"><div class="ulist"><ul><li><p>Behavior is the most important thing about software. It is what users depend on.
-Users like it when we add behavior (provided it is what they really wanted), but if we change or remove behavior they depend on (introduce bugs), they stop trusting us.</p></li><li><p>The act of improving design without changing its behavior is called refactoring.</p></li><li><p>Refactoring focus in program structure.</p></li><li><p>Optimization focus in resources.</p></li></ul></div></aside></section>
+<aside class="notes"><div class="ulist"><ul><li><p>El comportamiento es lo más importante en el software. Es de lo que dependen los usuarios.
+A los usuarios les gusta cuando agregamos comportamiento(features) (siempre que sea lo que realmente querían), pero si cambiamos o eliminamos el comportamiento del que dependen (introducimos errores), dejan de confiar en nosotros.</p></li><li><p>El acto de mejorar el diseño sin cambiar su comportamiento se llama refactorización (refactoring).</p></li><li><p>El refactoring esta enfocado en la estructura del programa.</p></li><li><p>La optimización se enfoca en el uso de recursos.</p></li></ul></div></aside></section>
 <section><table class="tableblock frame-all grid-all" style="width:100%"><colgroup><col style="width:16.6666%" /><col style="width:16.6666%" /><col style="width:16.6666%" /><col style="width:16.6666%" /><col style="width:16.6666%" /><col style="width:16.667%" /></colgroup><tbody><tr><td class="tableblock halign-left valign-top"></td><td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Adding a Feature</strong></p></td><td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Fixing a Bug</strong></p></td><td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Refactoring</strong></p></td><td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Optimizing</strong></p></td><td class="tableblock halign-left valign-top"></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">Structure</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">Changes</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">Changes</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">Changes</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">&#8201;&#8212;&#8201;</p></td><td class="tableblock halign-left valign-top"></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">Functionality</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">Changes</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">Changes</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">&#8201;&#8212;&#8201;</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">&#8201;&#8212;&#8201;</p></td><td class="tableblock halign-left valign-top"></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">Resource Usage</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">&#8201;&#8212;&#8201;</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">&#8201;&#8212;&#8201;</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">&#8201;&#8212;&#8201;</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">Changes</p></td><td class="tableblock halign-left valign-top"></td></tr></table>
-<aside class="notes"><div class="paragraph"><p>Preserving existing behavior is one of the largest challenges in software development. Even when we are changing primary features, we often have very large areas of behavior that we have to preserve.</p></div></aside></section>
+<aside class="notes"><div class="paragraph"><p>Preservar el comportamiento existente es uno de los mayores desafíos en el desarrollo de software. Incluso cuando estamos cambiando las características básicas, a menudo tenemos áreas muy grandes de comportamiento que debemos preservar.</p></div></aside></section>
 <section id="_riesgos_del_cambio"><h2>Riesgos del cambio</h2><div class="olist arabic"><ol class="arabic"><li><p>¿Cuáles cambios tenemos que hacer?</p></li><li><p>¿Cómo sabremos que los cambios fueron hechos correctamente?</p></li><li><p>¿Cómo sabremos que no hemos roto nada?</p></li></ol></div></section>
 <section id="_edit_and_pray"><h2>Edit and Pray</h2><div class="paragraph"><p>¿Estándar de la industria?</p></div></section>
 <section id="_cover_and_modify"><h2>Cover and Modify</h2><div class="paragraph"><p><strong>Tests</strong></p></div>
-<aside class="notes"><div class="paragraph"><p>When we have tests that detect change, it is like having a vise around our code. The behavior of the code is fixed in place. When we make changes, we can know that we are changing only one piece of behavior at a time. In short, we’re in control of our work.</p></div></aside></section>
+<aside class="notes"><div class="paragraph"><p>Cuando tenemos tests que detectan cambios, es como tener una visión de nuestro código. El comportamiento del código es fijo en su lugar. Cuando hacemos cambios, podemos saber que estamos cambiando solo una parte del comportamiento a la vez. En resumen, estamos en control de nuestro trabajo.</p></div></aside></section>
 <section id="_muchas_dependencias" data-background-image="images/invoice-example.png" data-background-size="auto"><h2>¿Muchas dependencias?</h2>
-<aside class="notes"><div class="paragraph"><p>Dependency is one of the most critical problems in software development. Much legacy code work involves breaking dependencies so that change can be easier.</p></div></aside></section>
+<aside class="notes"><div class="paragraph"><p>Las dependencias son uno de los problemas más críticos en el desarrollo de software. Buena parte del trabajo con el código legacy implica romper las dependencias para que el cambio sea más fácil.</p></div></aside></section>
 <section id="_el_dilema_del_código_legacy"><h2>El dilema del código legacy</h2><div class="paragraph"><p>Cuando cambiemos el código, deberíamos tener pruebas en su lugar. Para realizar pruebas, a menudo tenemos que cambiar el código.</p></div></section>
 <section id="_rompiendo_dependencias" data-background-image="images/invoice-dependency-broken.png" data-background-size="auto"><h2>Rompiendo dependencias</h2>
 <aside class="notes"><div class="paragraph"><p>Cuando se rompen dependencias en código legacy, a menudo tiene que suspender un poco su sentido de la estética. Algunas dependencias se rompen limpiamente; Otros terminan pareciendo menos ideales desde el punto de vista del diseño. Son como los puntos de incisión en la cirugía: es posible que quede una cicatriz en su código después de su trabajo, pero todo lo que esté debajo puede mejorar.</p></div></aside></section>
 <section id="_el_algoritmo_para_cambiar_código_legacy"><h2>El algoritmo para cambiar código legacy</h2><div class="olist arabic"><ol class="arabic"><li><p>Identificar puntos de cambio.</p></li><li><p>Encontrar puntos de test.</p></li><li><p>Romper dependencias.</p></li><li><p>Escribir tests.</p></li><li><p>Hacer cambios y refactorizar.</p></li></ol></div></section>
 <section id="_técnicas"><h2>Técnicas</h2></section>
-<section id="_no_tengo_mucho_tiempo_y_necesito_cambiar_el_código"><h2>No tengo mucho tiempo y necesito cambiar el código</h2><aside class="notes"><div class="paragraph"><p><strong>It Happens Someplace Every Day</strong>
-You boss comes in. He says, “Clients are clamoring for this feature. Can we get it done today?”</p></div>
-<div class="paragraph"><p>“I don’t know.”</p></div>
-<div class="paragraph"><p>You look around. Are there tests in place? No.</p></div>
-<div class="paragraph"><p>You ask, “How bad do you need it?”</p></div>
-<div class="paragraph"><p>You know that you can make the changes inline in all 10 places where you need to change things, and it will be done by 5:00. This is an emergency right? We’re going to fix this tomorrow, aren’t we?
-Remember, code is your house, and you have to live in it</p></div></aside></section>
-<section id="_sprout_method"><h2>Sprout method</h2><pre class="highlight listingblock"><code data-noescape="" class="java language-java">public class TransactionGate {
+<section id="_no_tengo_mucho_tiempo_y_necesito_cambiar_el_código"><h2>No tengo mucho tiempo y necesito cambiar el código</h2><aside class="notes"><div class="ulist"><ul><li><p>Sucede en algún lugar todos los días *
+Tu jefe entra y dice: "Los clientes quieren una nueva característica. ¿Podemos hacerlo hoy?</p></li></ul></div>
+<div class="paragraph"><p>"No lo sé."</p></div>
+<div class="paragraph"><p>Miras a tu alrededor. ¿Hay testing en el lugar? No.</p></div>
+<div class="paragraph"><p>Preguntamos: "¿Qué tanto lo necesitan?"</p></div>
+<div class="paragraph"><p>Sabemos que podemos hacer los cambios de unas líneas en 10 lugares, y quedaría para las 17:00h.
+¿Es una emergencia?
+¿Se puede arreglar mañana?
+El código es nuestra casa, y tenemos que vivir en ella.</p></div></aside></section>
+<section id="_sprout_method"><h2>Sprout method</h2><pre class="highlight listingblock"><code data-noescape="" class="java language-java">//Código original
+public class TransactionGate {
+  public void postEntries(List entries) {
+    for (Iterator it = entries.iterator(); it.hasNext(); ) {
+      Entry entry = (Entry)it.next();
+      entry.postDate();
+    }
+    transactionBundle.getListManager().add(entries);
+  }
+  //...
+}</code></pre></section>
+<section id="_agregar_feature"><h2>Agregar feature</h2><div class="paragraph"><p>Verificar las nuevas entradas no estén previamente en <code>transactionBundle</code></p></div></section>
+<section id="_se_puede_implementar_facilmente_con"><h2>Se puede implementar "facilmente" con</h2><pre class="highlight listingblock"><code data-noescape="" class="java language-java">public class TransactionGate {
   public void postEntries(List entries) {
     List entriesToAdd = new LinkedList();
     for (Iterator it = entries.iterator(); it.hasNext(); ) {
       Entry entry = (Entry)it.next();
       if (!transactionBundle.getListManager().hasEntry(entry) {
-          entry.postDate();
-          entriesToAdd.add(entry);
+        entry.postDate();
+        entriesToAdd.add(entry);
       }
     }
     transactionBundle.getListManager().add(entriesToAdd);
   }
   //...
 }</code></pre></section>
-<section id="_agregar_feature"><h2>Agregar feature</h2><div class="paragraph"><p>Verificar las nuevas entradas no estén previamente en <code>transactionBundle</code></p></div></section>
+<section id="_pero_volvemos_a_caer_en_el_ciclo_de_código_legacy_probemos_ahora_el_sprout_method"><h2>Pero volvemos a caer en el ciclo de código legacy. Probemos ahora el Sprout method.</h2></section>
 <section id="_extrayendo_lógica_a_método"><h2>Extrayendo lógica a método</h2><pre class="highlight listingblock"><code data-noescape="" class="java language-java">public class TransactionGate {
 //...
   List uniqueEntries(List entries) {
@@ -113,8 +127,8 @@ Remember, code is your house, and you have to live in it</p></div></aside></sect
   beginDate, endDate);
   std::string pageText;
   pageText += "&lt;html&gt;&lt;head&gt;&lt;title&gt;"
-  "Quarterly Report"
-  "&lt;/title&gt;&lt;/head&gt;&lt;body&gt;&lt;table&gt;";
+    "Quarterly Report"
+    "&lt;/title&gt;&lt;/head&gt;&lt;body&gt;&lt;table&gt;";
   if (results.size() != 0) {
     for (std::vector&lt;Result&gt;::iterator it = results.begin();it != results.end();++it) {
       pageText += "&lt;tr&gt;";

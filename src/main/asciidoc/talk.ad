@@ -67,7 +67,7 @@ image::legacy-code.jpeg[background, size=auto]
 
 [NOTE.speaker]
 ====
-Code without tests is bad code. It doesn’t matter how well written it is; it doesn’t matter how pretty or object-oriented or well-encapsulated it is. With tests, we can change the behavior of our code quickly and verifiably. Without them, we really don’t know if our code is getting better or worse.
+Código sin pruebas es código malo (bad code). No importa lo bien escrito que esté; no importa lo bonito que esté u orientado a objetos o bien encapsulado. Con las pruebas, podemos cambiar el comportamiento de nuestro código de forma rápida y verificable. Sin ellos, realmente no sabemos si nuestro código está mejorando o empeorando.
 ====
 
 == Razones para cambiar un software
@@ -79,14 +79,14 @@ Code without tests is bad code. It doesn’t matter how well written it is; it d
 
 [NOTE.speaker]
 ====
-* Behavior is the most important thing about software. It is what users depend on.
-Users like it when we add behavior (provided it is what they really wanted), but if we change or remove behavior they depend on (introduce bugs), they stop trusting us.
+* El comportamiento es lo más importante en el software. Es de lo que dependen los usuarios.
+A los usuarios les gusta cuando agregamos comportamiento(features) (siempre que sea lo que realmente querían), pero si cambiamos o eliminamos el comportamiento del que dependen (introducimos errores), dejan de confiar en nosotros.
 
-* The act of improving design without changing its behavior is called refactoring.
+* El acto de mejorar el diseño sin cambiar su comportamiento se llama refactorización (refactoring).
 
-* Refactoring focus in program structure.
+* El refactoring esta enfocado en la estructura del programa.
 
-* Optimization focus in resources.
+* La optimización se enfoca en el uso de recursos.
 
 ====
 
@@ -101,7 +101,7 @@ Users like it when we add behavior (provided it is what they really wanted), but
 
 [NOTE.speaker]
 ====
-Preserving existing behavior is one of the largest challenges in software development. Even when we are changing primary features, we often have very large areas of behavior that we have to preserve.
+Preservar el comportamiento existente es uno de los mayores desafíos en el desarrollo de software. Incluso cuando estamos cambiando las características básicas, a menudo tenemos áreas muy grandes de comportamiento que debemos preservar.
 ====
 
 == Riesgos del cambio
@@ -120,7 +120,7 @@ Preserving existing behavior is one of the largest challenges in software develo
 
 [NOTE.speaker]
 ====
-When we have tests that detect change, it is like having a vise around our code. The behavior of the code is fixed in place. When we make changes, we can know that we are changing only one piece of behavior at a time. In short, we’re in control of our work.
+Cuando tenemos tests que detectan cambios, es como tener una visión de nuestro código. El comportamiento del código es fijo en su lugar. Cuando hacemos cambios, podemos saber que estamos cambiando solo una parte del comportamiento a la vez. En resumen, estamos en control de nuestro trabajo.
 ====
 
 == ¿Muchas dependencias?
@@ -129,7 +129,7 @@ image::invoice-example.png[background, size=auto]
 
 [NOTE.speaker]
 ====
-Dependency is one of the most critical problems in software development. Much legacy code work involves breaking dependencies so that change can be easier.
+Las dependencias son uno de los problemas más críticos en el desarrollo de software. Buena parte del trabajo con el código legacy implica romper las dependencias para que el cambio sea más fácil.
 ====
 
 == El dilema del código legacy
@@ -158,33 +158,32 @@ Cuando se rompen dependencias en código legacy, a menudo tiene que suspender un
 
 [NOTE.speaker]
 ====
-*It Happens Someplace Every Day*
-You boss comes in. He says, “Clients are clamoring for this feature. Can we get it done today?”
+* Sucede en algún lugar todos los días *
+Tu jefe entra y dice: "Los clientes quieren una nueva característica. ¿Podemos hacerlo hoy?
 
-“I don’t know.”
+"No lo sé."
 
-You look around. Are there tests in place? No.
+Miras a tu alrededor. ¿Hay testing en el lugar? No.
 
-You ask, “How bad do you need it?”
+Preguntamos: "¿Qué tanto lo necesitan?"
 
-You know that you can make the changes inline in all 10 places where you need to change things, and it will be done by 5:00. This is an emergency right? We’re going to fix this tomorrow, aren’t we?
-Remember, code is your house, and you have to live in it
+Sabemos que podemos hacer los cambios de unas líneas en 10 lugares, y quedaría para las 17:00h.
+¿Es una emergencia?
+¿Se puede arreglar mañana?
+El código es nuestra casa, y tenemos que vivir en ella.
 ====
 
 == Sprout method
 
 ```java
+//Código original
 public class TransactionGate {
   public void postEntries(List entries) {
-    List entriesToAdd = new LinkedList();
     for (Iterator it = entries.iterator(); it.hasNext(); ) {
       Entry entry = (Entry)it.next();
-      if (!transactionBundle.getListManager().hasEntry(entry) {
-          entry.postDate();
-          entriesToAdd.add(entry);
-      }
+      entry.postDate();
     }
-    transactionBundle.getListManager().add(entriesToAdd);
+    transactionBundle.getListManager().add(entries);
   }
   //...
 }
@@ -193,6 +192,27 @@ public class TransactionGate {
 == Agregar feature
 
 Verificar las nuevas entradas no estén previamente en `transactionBundle`
+
+== Se puede implementar "facilmente" con
+
+```java
+public class TransactionGate {
+  public void postEntries(List entries) {
+    List entriesToAdd = new LinkedList();
+    for (Iterator it = entries.iterator(); it.hasNext(); ) {
+      Entry entry = (Entry)it.next();
+      if (!transactionBundle.getListManager().hasEntry(entry) {
+        entry.postDate();
+        entriesToAdd.add(entry);
+      }
+    }
+    transactionBundle.getListManager().add(entriesToAdd);
+  }
+  //...
+}
+```
+
+== Pero volvemos a caer en el ciclo de código legacy. Probemos ahora el Sprout method.
 
 == Extrayendo lógica a método
 ```java
@@ -264,8 +284,8 @@ std::string QuarterlyReportGenerator::generate() {
   beginDate, endDate);
   std::string pageText;
   pageText += "<html><head><title>"
-  "Quarterly Report"
-  "</title></head><body><table>";
+    "Quarterly Report"
+    "</title></head><body><table>";
   if (results.size() != 0) {
     for (std::vector<Result>::iterator it = results.begin();it != results.end();++it) {
       pageText += "<tr>";
