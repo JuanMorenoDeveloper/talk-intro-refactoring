@@ -12,7 +12,8 @@ include::footer.ad[]
 Contenido de la presentación:
 
 * Secciones teóricas:
-**  Razones para cambiar un sofware.
+**  Código legacy
+**  Razones para cambiar un software.
 **  Testing
 **  Algoritmo para cambiar código legacy
 **  Herramientas
@@ -28,7 +29,7 @@ Contenido de la presentación:
 
 == Contenido
 * Fundamentos
-* ¿Como cambiar código legacy?
+* ¿Cómo cambiar código legacy?
 * Herramientas
 * Técnicas
 
@@ -45,12 +46,133 @@ image::good-intentions1.jpg[background, size=auto]
 
 image::good-intentions2.jpg[background, size=auto]
 
+== Código legacy
+
+== !
+
+image::legacy-code.jpeg[background, size=auto]
+
 == ¿Qué es código legacy? icon:lightbulb[]
 
 * ¿Código de "otros"?
 * ¿Código díficil de entender?
 * ¿Código díficil de mantener?
 * ...
+
+== !
+
+> Código legacy es código sin tests.
+
+> (2004) M. Feather
+
+[NOTE.speaker]
+====
+Code without tests is bad code. It doesn’t matter how well written it is; it doesn’t matter how pretty or object-oriented or well-encapsulated it is. With tests, we can change the behavior of our code quickly and verifiably. Without them, we really don’t know if our code is getting better or worse.
+====
+
+== Razones para cambiar un software
+
+1. Agregar una feature
+2. Reparar un bug
+3. Mejorar el diseño
+4. Optimizar el uso de recursos
+
+[NOTE.speaker]
+====
+* Behavior is the most important thing about software. It is what users depend on.
+Users like it when we add behavior (provided it is what they really wanted), but if we change or remove behavior they depend on (introduce bugs), they stop trusting us.
+
+* The act of improving design without changing its behavior is called refactoring.
+
+* Refactoring focus in program structure.
+
+* Optimization focus in resources.
+
+====
+
+== !
+
+|===
+|                | *Adding a Feature* | *Fixing a Bug* | *Refactoring* | *Optimizing* |
+| Structure      | Changes          | Changes      | Changes     | --         |
+| Functionality  | Changes          | Changes      | --          | --         |
+| Resource Usage | --               | --           | --          | Changes    |
+|===
+
+[NOTE.speaker]
+====
+Preserving existing behavior is one of the largest challenges in software development. Even when we are changing primary features, we often have very large areas of behavior that we have to preserve.
+====
+
+== Riesgos del cambio
+
+1. ¿Cuáles cambios tenemos que hacer?
+2. ¿Cómo sabremos que los cambios fueron hechos correctamente?
+3. ¿Cómo sabremos que no hemos roto nada?
+
+== Edit and Pray
+
+¿Estándar de la industria?
+
+== Cover and Modify
+
+*Tests*
+
+[NOTE.speaker]
+====
+When we have tests that detect change, it is like having a vise around our code. The behavior of the code is fixed in place. When we make changes, we can know that we are changing only one piece of behavior at a time. In short, we’re in control of our work.
+====
+
+== !
+
+image::invoice-example.png[background, size=auto]
+
+[NOTE.speaker]
+====
+Dependency is one of the most critical problems in software development. Much legacy code work involves breaking dependencies so that change can be easier.
+====
+
+== El dilema del código legacy
+
+Cuando cambiemos el código, deberíamos tener pruebas en su lugar. Para realizar pruebas, a menudo tenemos que cambiar el código.
+
+== !
+image::invoice-dependency-broken.png[background, size=auto]
+
+[NOTE.speaker]
+====
+When you break dependencies in legacy code, you often have to suspend your sense
+of aesthetics a bit. Some dependencies break cleanly; others end up looking less than ideal from a design point of view. They are like the incision points in surgery: There might be a scar left in your code after your work, but everything beneath it can get better.
+====
+
+== El algoritmo para cambiar código legacy
+
+1. Identificar puntos de cambio.
+2. Encontrar puntos de test.
+3. Romper depdendencias.
+4. Escribir tests.
+5. Hacer cambios y refactorizar.
+
+== Técnicas
+
+== No tengo mucho tiempo y necesito cambiar el código
+
+[NOTE.speaker]
+====
+*It Happens Someplace Every Day*
+You boss comes in. He says, “Clients are clamoring for this feature. Can we get it done today?”
+
+“I don’t know.”
+
+You look around. Are there tests in place? No.
+
+You ask, “How bad do you need it?”
+
+You know that you can make the changes inline in all 10 places where you need to change things, and it will be done by 5:00. This is an emergency right? We’re going to fix this tomorrow, aren’t we?
+Remember, code is your house, and you have to live in it
+====
+
+== Sprout method
 
 
 
