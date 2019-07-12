@@ -410,7 +410,7 @@ class QuarterlyReportGenerator : public HTMLGenerator {
 
 == Conclusiones
 
-* Trabajar con código legacy es díficil
+* Trabajar con código legacy es difícil
 * Los tests son necesarios
 * Cuando no se puede prevenir la enfermedad, se tiene que tratar
 * Las técnicas ayuda, pero su aplicación depende del contexto
