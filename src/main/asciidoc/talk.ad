@@ -123,7 +123,7 @@ Preserving existing behavior is one of the largest challenges in software develo
 When we have tests that detect change, it is like having a vise around our code. The behavior of the code is fixed in place. When we make changes, we can know that we are changing only one piece of behavior at a time. In short, we’re in control of our work.
 ====
 
-== !
+== ¿Muchas dependencias?
 
 image::invoice-example.png[background, size=auto]
 
@@ -136,20 +136,19 @@ Dependency is one of the most critical problems in software development. Much le
 
 Cuando cambiemos el código, deberíamos tener pruebas en su lugar. Para realizar pruebas, a menudo tenemos que cambiar el código.
 
-== !
+== Rompiendo dependencias
 image::invoice-dependency-broken.png[background, size=auto]
 
 [NOTE.speaker]
 ====
-When you break dependencies in legacy code, you often have to suspend your sense
-of aesthetics a bit. Some dependencies break cleanly; others end up looking less than ideal from a design point of view. They are like the incision points in surgery: There might be a scar left in your code after your work, but everything beneath it can get better.
+Cuando se rompen dependencias en código legacy, a menudo tiene que suspender un poco su sentido de la estética. Algunas dependencias se rompen limpiamente; Otros terminan pareciendo menos ideales desde el punto de vista del diseño. Son como los puntos de incisión en la cirugía: es posible que quede una cicatriz en su código después de su trabajo, pero todo lo que esté debajo puede mejorar.
 ====
 
 == El algoritmo para cambiar código legacy
 
 1. Identificar puntos de cambio.
 2. Encontrar puntos de test.
-3. Romper depdendencias.
+3. Romper dependencias.
 4. Escribir tests.
 5. Hacer cambios y refactorizar.
 
@@ -174,75 +173,226 @@ Remember, code is your house, and you have to live in it
 
 == Sprout method
 
+```java
 public class TransactionGate {
-    public void postEntries(List entries) {
-        List entriesToAdd = new LinkedList();
-        for (Iterator it = entries.iterator(); it.hasNext(); ) {
-            Entry entry = (Entry)it.next();
-            if (!transactionBundle.getListManager().hasEntry(entry) {
-                entry.postDate();
-                entriesToAdd.add(entry);
-            }
-        }
-        transactionBundle.getListManager().add(entriesToAdd);
+  public void postEntries(List entries) {
+    List entriesToAdd = new LinkedList();
+    for (Iterator it = entries.iterator(); it.hasNext(); ) {
+      Entry entry = (Entry)it.next();
+      if (!transactionBundle.getListManager().hasEntry(entry) {
+          entry.postDate();
+          entriesToAdd.add(entry);
+      }
     }
+    transactionBundle.getListManager().add(entriesToAdd);
+  }
+  //...
 }
+```
 
+== Agregar feature
+
+Verificar las nuevas entradas no estén previamente en `transactionBundle`
+
+== Extrayendo lógica a método
+```java
 public class TransactionGate {
 //...
-    List uniqueEntries(List entries) {
-        List result = new ArrayList();
-
-        for (Iterator it = entries.iterator(); it.hasNext(); ) {
-            Entry entry = (Entry)it.next();
-            if (!transactionBundle.getListManager().hasEntry(entry) {
-                result.add(entry);
-            }
-        }
-        return result;
+  List uniqueEntries(List entries) {
+    List result = new ArrayList();
+    for (Iterator it = entries.iterator(); it.hasNext(); ) {
+      Entry entry = (Entry)it.next();
+      if (!transactionBundle.getListManager().hasEntry(entry) {
+          result.add(entry);
+      }
     }
+    return result;
+  }
 //...
 }
+```
 
+== Funcionalidad incorporada
+
+```java
 public class TransactionGate{
 //...
-    public void postEntries(List entries) {
-        List entriesToAdd = uniqueEntries(entries);
-        for (Iterator it = entriesToAdd.iterator(); it.hasNext(); ) {
-            Entry entry = (Entry)it.next();
-            entry.postDate();
-        }
-        transactionBundle.getListManager().add(entriesToAdd);
+  public void postEntries(List entries) {
+    List entriesToAdd = uniqueEntries(entries);
+    for (Iterator it = entriesToAdd.iterator(); it.hasNext(); ) {
+      Entry entry = (Entry)it.next();
+      entry.postDate();
     }
+    transactionBundle.getListManager().add(entriesToAdd);
+  }
 //...
 }
+```
+
+== Implementando el método sprout
+1. Identificar
+2. Agregar la referencia en el código
+3. Entradas y salidas como argumentos
+4. Identificar valores de retorno
+5. Implementación del método vía TDD
+6. Eliminar comentario y habilitar la llamada.
 
 [NOTE.speaker]
 ====
-1. Identify where you need to make your code change.
-2. If the change can be formulated as a single sequence of statements in one
-place in a method, write down a call for a new method that will do the
-work involved and then comment it out. (I like to do this before I even
-write the method so that I can get a sense of what the method call will
-look like in context.)
-3. Determine what local variables you need from the source method, and
-make them arguments to the call.
-4. Determine whether the sprouted method will need to return values to
-source method. If so, change the call so that its return value is assigned
-to a variable.
-5. Develop the sprout method using test-driven development (88).
-6. Remove the comment in the source method to enable the call.
-
-*Disadvantages*
-* leaves the source method in an odd state.
-* leaves your code in limbo.
-*Advantages*
-* you are clearly separating new code from old codes
-* You see all of the variables affected
+1. Identifique dónde necesita cambiar su código.
+2. Si el cambio se puede formular como una secuencia única de declaraciones en un lugar en un método, escriba una llamada para un nuevo método que hará el trabajo involucrado y luego coméntelo. (Hacer esto incluso antes de escribir el método para poder tener una idea de cómo se verá el llamado del método en el contexto).
+3. Determine qué variables locales necesita del método de origen y conviértalos en argumentos para la llamada.
+4. Determine si el método sprout deberá devolver los valores al método de origen. Si es así, cambie la llamada para que su valor de retorno se asigne a una variable.
+5. Desarrollar el método sprout de utilizando TDD.
+6. Elimine el comentario en el método de origen para habilitar la llamada.
 ====
+
+== Ventajas del método sprout
+* Clara separación entre el código anterior y el nuevo.
+* Se pueden identificar las variables afectadas.
+* El nuevo método incluye tests.
+
+== Desventajas del método sprout
+* Puede dejar el método original en un estado raro (invocaciones a funciones externas).
+* Puede dejar el código en un limbo (El nuevo método puede no estar asociado a la responsabilidad del código original)
 
 == Sprout class
 
+```cpp
+std::string QuarterlyReportGenerator::generate() {
+  std::vector<Result> results = database.queryResults(
+  beginDate, endDate);
+  std::string pageText;
+  pageText += "<html><head><title>"
+  "Quarterly Report"
+  "</title></head><body><table>";
+  if (results.size() != 0) {
+    for (std::vector<Result>::iterator it = results.begin();it != results.end();++it) {
+      pageText += "<tr>";
+      pageText += "<td>" + it->department + "</td>";
+      pageText += "<td>" + it->manager + "</td>";
+      char buffer [128];
+      sprintf(buffer, "<td>$%d</td>", it->netProfit / 100);
+      pageText += std::string(buffer);
+      sprintf(buffer, "<td>$%d</td>", it->operatingExpense / 100);
+      pageText += std::string(buffer);
+      pageText += "</tr>";
+    }
+  } else {
+    pageText += "No results for this period";
+  }
+  pageText += "</table>";
+  pageText += "</body>";
+  pageText += "</html>";
+  return pageText;
+}
+```
 
+== Agregar feature
+
+Agregar una cabecera al listado del tipo
+
+```html
+<tr><td>Department</td><td>Manager</td><td>Profit</td><td>Expenses</td></tr>
+```
+
+== Extrayendo lógica a clase
+
+```cpp
+using namespace std;
+class QuarterlyReportTableHeaderProducer{
+  public:
+    string makeHeader();
+};
+
+string QuarterlyReportTableProducer::makeHeader(){
+  return "<tr><td>Department</td><td>Manager</td>”
+  "<td>Profit</td><td>Expenses</td>”;
+}
+```
+
+== Agregamos invocación al método original
+
+```cpp
+QuarterlyReportGenerator::generate():
+//...
+QuarterlyReportTableHeaderProducer producer;
+pageText += producer.makeHeader();
+//...
+```
+== ¿Es en serio? Un método para esto
+
+== Sí
+
+== Permite hacer refactoring adicionales
+
+== Una interfaz
+
+```cpp
+class QuarterlyReportTableHeaderGenerator{
+  public:
+  string generate();
+};
+```
+
+== Diferentes implementaciones
+
+```cpp
+class HTMLGenerator{
+  public:
+    virtual ~HTMLGenerator() = 0;
+    virtual string generate() = 0;
+};
+
+class QuarterlyReportTableHeaderGenerator : public HTMLGenerator {
+  public:
+  //...
+    virtual string generate();
+  //...
+};
+class QuarterlyReportGenerator : public HTMLGenerator {
+  public:
+  //...
+    virtual string generate();
+  //...
+};
+```
+== Implementando la clase sprout
+
+1. Identifique dónde necesita cambiar su código.
+2. ¿Se puede agrupar en un método? Piense en un nombre de clase e invoque al método. Comente la invocación.
+3. Variables y argumentos.
+4. Valores de retorno.
+5. Desarrolle la clase sprout usando TDD.
+6. Elimine el comentario y haga la invocación.
+
+[NOTE.speaker]
+====
+1. Identifique dónde necesita cambiar su código.
+2. Si el cambio se puede formular como una secuencia única de declaraciones en un lugar en un método, piense en un buen nombre para una clase que podría hacer ese trabajo. Luego, escriba el código que crearía un objeto de esa clase en ese lugar y llame a un método que haga el trabajo que necesita hacer; Luego comenta esas líneas.
+3. Determine qué variables locales necesita del método de origen y conviértalos en argumentos para el constructor de las clases.
+4. Determine si la clase brotada deberá devolver los valores al método de origen. Si es así, proporcione un método en la clase que proporcionará esos valores y agregue una llamada en el método de origen para recibir esos valores.
+5. Desarrolle primero la prueba de la clase de brotes (vea desarrollo dirigido por pruebas)
+6. Elimine el comentario en el método de origen para habilitar la creación de objetos y las llamadas.
+====
+
+== Ventajas de la clase sprout
+* Permite avanzar en el desarrollo con más confianza que si haces cambios invasivos.
+
+== Desventajas de la clase sprout
+* Complejidad conceptual.
+
+== ¿Hay más técnicas?
+
+== Sí
+
+== Las veremos más adelante...
+
+== Conclusiones
+
+* Trabajar con código legacy es díficil
+* Los tests son necesarios
+* Cuando no se puede prevenir la enfermedad, se tiene que tratar
+* Las técnicas ayuda, pero su aplicación depende del contexto
 
 include::self.ad[]
