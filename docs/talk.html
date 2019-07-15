@@ -55,6 +55,7 @@ A los usuarios les gusta cuando agregamos comportamiento(features) (siempre que 
 <section id="_rompiendo_dependencias" data-background-image="images/invoice-dependency-broken.png" data-background-size="auto"><h2>Rompiendo dependencias</h2>
 <aside class="notes"><div class="paragraph"><p>Cuando se rompen dependencias en código legacy, a menudo tiene que suspender un poco su sentido de la estética. Algunas dependencias se rompen limpiamente; Otros terminan pareciendo menos ideales desde el punto de vista del diseño. Son como los puntos de incisión en la cirugía: es posible que quede una cicatriz en su código después de su trabajo, pero todo lo que esté debajo puede mejorar.</p></div></aside></section>
 <section id="_el_algoritmo_para_cambiar_código_legacy"><h2>El algoritmo para cambiar código legacy</h2><div class="olist arabic"><ol class="arabic"><li><p>Identificar puntos de cambio.</p></li><li><p>Encontrar puntos de test.</p></li><li><p>Romper dependencias.</p></li><li><p>Escribir tests.</p></li><li><p>Hacer cambios y refactorizar.</p></li></ol></div></section>
+<section id="_herramientas"><h2>Herramientas</h2><div class="ulist"><ul><li><p>IDEs</p></li><li><p>Frameworks de Unit Test</p></li></ul></div></section>
 <section id="_técnicas"><h2>Técnicas</h2></section>
 <section id="_no_tengo_mucho_tiempo_y_necesito_cambiar_el_código"><h2>No tengo mucho tiempo y necesito cambiar el código</h2><aside class="notes"><div class="ulist"><ul><li><p>Sucede en algún lugar todos los días *
 Tu jefe entra y dice: "Los clientes quieren una nueva característica. ¿Podemos hacerlo hoy?</p></li></ul></div>
@@ -77,7 +78,7 @@ public class TransactionGate {
   //...
 }</code></pre></section>
 <section id="_agregar_feature"><h2>Agregar feature</h2><div class="paragraph"><p>Verificar las nuevas entradas no estén previamente en <code>transactionBundle</code></p></div></section>
-<section id="_se_puede_implementar_facilmente_con"><h2>Se puede implementar "facilmente" con</h2><pre class="highlight listingblock"><code data-noescape="" class="java language-java">public class TransactionGate {
+<section id="_se_puede_implementar_fácilmente_con"><h2>Se puede implementar "fácilmente" con</h2><pre class="highlight listingblock"><code data-noescape="" class="java language-java">public class TransactionGate {
   public void postEntries(List entries) {
     List entriesToAdd = new LinkedList();
     for (Iterator it = entries.iterator(); it.hasNext(); ) {

@@ -152,6 +152,11 @@ Cuando se rompen dependencias en código legacy, a menudo tiene que suspender un
 4. Escribir tests.
 5. Hacer cambios y refactorizar.
 
+== Herramientas
+
+* IDEs
+* Frameworks de Unit Test
+
 == Técnicas
 
 == No tengo mucho tiempo y necesito cambiar el código
@@ -193,7 +198,7 @@ public class TransactionGate {
 
 Verificar las nuevas entradas no estén previamente en `transactionBundle`
 
-== Se puede implementar "facilmente" con
+== Se puede implementar "fácilmente" con
 
 ```java
 public class TransactionGate {
