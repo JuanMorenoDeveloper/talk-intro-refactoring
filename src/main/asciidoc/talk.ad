@@ -331,8 +331,8 @@ class QuarterlyReportTableHeaderProducer{
 };
 
 string QuarterlyReportTableProducer::makeHeader(){
-  return "<tr><td>Department</td><td>Manager</td>”
-  "<td>Profit</td><td>Expenses</td>”;
+  return "<tr><td>Department</td><td>Manager</td>"
+  "<td>Profit</td><td>Expenses</td>";
 }
 ```
 
