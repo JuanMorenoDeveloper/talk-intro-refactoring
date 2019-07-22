@@ -407,6 +407,26 @@ class QuarterlyReportGenerator : public HTMLGenerator {
 == Desventajas de la clase sprout
 * Complejidad conceptual.
 
+== Wrap Method
+
+```java
+public class Employee{
+//...
+  public void pay() {
+    Money amount = new Money();
+    for (Iterator it = timecards.iterator(); it.hasNext(); ) {
+      Timecard card = (Timecard)it.next();
+      if (payPeriod.contains(date)) {
+        amount.add(card.getHours() * payRate);
+      }
+    }
+    payDispatcher.pay(this, date, amount);
+  }
+}
+```
+
+== Wrap Class
+
 == ¿Hay más técnicas?
 
 == Sí
