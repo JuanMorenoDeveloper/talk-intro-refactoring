@@ -196,6 +196,39 @@ class QuarterlyReportGenerator : public HTMLGenerator {
 <aside class="notes"><div class="olist arabic"><ol class="arabic"><li><p>Identifique dónde necesita cambiar su código.</p></li><li><p>Si el cambio se puede formular como una secuencia única de declaraciones en un lugar en un método, piense en un buen nombre para una clase que podría hacer ese trabajo. Luego, escriba el código que crearía un objeto de esa clase en ese lugar y llame a un método que haga el trabajo que necesita hacer; Luego comenta esas líneas.</p></li><li><p>Determine qué variables locales necesita del método de origen y conviértalos en argumentos para el constructor de las clases.</p></li><li><p>Determine si la clase brotada deberá devolver los valores al método de origen. Si es así, proporcione un método en la clase que proporcionará esos valores y agregue una llamada en el método de origen para recibir esos valores.</p></li><li><p>Desarrolle primero la prueba de la clase de brotes (vea desarrollo dirigido por pruebas)</p></li><li><p>Elimine el comentario en el método de origen para habilitar la creación de objetos y las llamadas.</p></li></ol></div></aside></section>
 <section id="_ventajas_de_la_clase_sprout"><h2>Ventajas de la clase sprout</h2><div class="ulist"><ul><li><p>Permite avanzar en el desarrollo con más confianza que si haces cambios invasivos.</p></li></ul></div></section>
 <section id="_desventajas_de_la_clase_sprout"><h2>Desventajas de la clase sprout</h2><div class="ulist"><ul><li><p>Complejidad conceptual.</p></li></ul></div></section>
+<section id="_wrap_method"><h2>Wrap Method</h2><pre class="highlight listingblock"><code data-noescape="" class="java language-java">public class Employee{
+//...
+  public void pay() {
+    Money amount = new Money();
+    for (Iterator it = timecards.iterator(); it.hasNext(); ) {
+      Timecard card = (Timecard)it.next();
+      if (payPeriod.contains(date)) {
+        amount.add(card.getHours() * payRate);
+      }
+    }
+    payDispatcher.pay(this, date, amount);
+  }
+}</code></pre></section>
+<section id="_separamos_la_funcionalidad_en_dos_métodos"><h2>Separamos la funcionalidad en dos métodos</h2><pre class="highlight listingblock"><code data-noescape="" class="java language-java">public class Employee {
+  private void dispatchPayment() {
+    Money amount = new Money();
+    for (Iterator it = timecards.iterator(); it.hasNext(); ) {
+      Timecard card = (Timecard)it.next();
+      if (payPeriod.contains(date)) {
+        amount.add(card.getHours() * payRate);
+      }
+    }
+    payDispatcher.pay(this, date, amount);
+  }
+  public void pay() {
+    logPayment(); <i class="conum" data-value="1"></i><b>(1)</b>
+    dispatchPayment(); <i class="conum" data-value="2"></i><b>(2)</b>
+  }
+  private void logPayment() {
+    //...
+  }
+}</code></pre></section>
+<section id="_wrap_class"><h2>Wrap Class</h2></section>
 <section id="_hay_más_técnicas"><h2>¿Hay más técnicas?</h2></section>
 <section id="_sí_2"><h2>Sí</h2></section>
 <section id="_las_veremos_más_adelante"><h2>Las veremos más adelante&#8230;&#8203;</h2></section>

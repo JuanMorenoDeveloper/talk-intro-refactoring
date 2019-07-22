@@ -425,6 +425,31 @@ public class Employee{
 }
 ```
 
+== Separamos la funcionalidad en dos métodos
+
+```java
+public class Employee {
+  private void dispatchPayment() {
+    Money amount = new Money();
+    for (Iterator it = timecards.iterator(); it.hasNext(); ) {
+      Timecard card = (Timecard)it.next();
+      if (payPeriod.contains(date)) {
+        amount.add(card.getHours() * payRate);
+      }
+    }
+    payDispatcher.pay(this, date, amount);
+  }
+  public void pay() {
+    logPayment(); // <1>
+    dispatchPayment(); // <2>
+  }
+  private void logPayment() {
+    //...
+  }
+}
+```
+
+
 == Wrap Class
 
 == ¿Hay más técnicas?
