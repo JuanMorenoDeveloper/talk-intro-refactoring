@@ -418,6 +418,7 @@ class QuarterlyReportGenerator : public HTMLGenerator {
 * Trabajar con código legacy es difícil
 * Los tests son necesarios
 * Cuando no se puede prevenir la enfermedad, se tiene que tratar
-* Las técnicas ayuda, pero su aplicación depende del contexto
+* Las aplicación de estás técnicas depende del contexto
+* La idea de estás técnicas es apoyarlas con test unitarios, sin aplicar test solo se agrega más código legacy
 
 include::self.ad[]

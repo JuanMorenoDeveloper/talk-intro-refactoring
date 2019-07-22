@@ -159,8 +159,8 @@ class QuarterlyReportTableHeaderProducer{
 };
 
 string QuarterlyReportTableProducer::makeHeader(){
-  return "&lt;tr&gt;&lt;td&gt;Department&lt;/td&gt;&lt;td&gt;Manager&lt;/td&gt;”
-  "&lt;td&gt;Profit&lt;/td&gt;&lt;td&gt;Expenses&lt;/td&gt;”;
+  return "&lt;tr&gt;&lt;td&gt;Department&lt;/td&gt;&lt;td&gt;Manager&lt;/td&gt;"
+  "&lt;td&gt;Profit&lt;/td&gt;&lt;td&gt;Expenses&lt;/td&gt;";
 }</code></pre></section>
 <section id="_agregamos_invocación_al_método_original"><h2>Agregamos invocación al método original</h2><pre class="highlight listingblock"><code data-noescape="" class="cpp language-cpp">QuarterlyReportGenerator::generate():
 //...
@@ -199,7 +199,7 @@ class QuarterlyReportGenerator : public HTMLGenerator {
 <section id="_hay_más_técnicas"><h2>¿Hay más técnicas?</h2></section>
 <section id="_sí_2"><h2>Sí</h2></section>
 <section id="_las_veremos_más_adelante"><h2>Las veremos más adelante&#8230;&#8203;</h2></section>
-<section id="_conclusiones"><h2>Conclusiones</h2><div class="ulist"><ul><li><p>Trabajar con código legacy es difícil</p></li><li><p>Los tests son necesarios</p></li><li><p>Cuando no se puede prevenir la enfermedad, se tiene que tratar</p></li><li><p>Las técnicas ayuda, pero su aplicación depende del contexto</p></li></ul></div></section>
+<section id="_conclusiones"><h2>Conclusiones</h2><div class="ulist"><ul><li><p>Trabajar con código legacy es difícil</p></li><li><p>Los tests son necesarios</p></li><li><p>Cuando no se puede prevenir la enfermedad, se tiene que tratar</p></li><li><p>Las aplicación de estás técnicas depende del contexto</p></li><li><p>La idea de estás técnicas es apoyarlas con test unitarios, sin aplicar test solo se agrega más código legacy</p></li></ul></div></section>
 <section><div class="ulist"><ul><li><p>Fuentes:</p><div class="ulist"><ul><li><p>Working Effectively with Legacy Code, 1st. Michael Feathers (2004)</p></li><li><p><a href="http://xurxodev.com/trabajando-con-codigo-legado/" class="bare">http://xurxodev.com/trabajando-con-codigo-legado/</a></p></li><li><p><a href="http://xurxodev.com/trabajando-con-codigo-legado-sprout-method-y-sprout-class/" class="bare">http://xurxodev.com/trabajando-con-codigo-legado-sprout-method-y-sprout-class/</a></p></li></ul></div></li></ul></div>
 <aside class="notes"><div class="paragraph"><p>Para generar pdf incluir al final de la presentación lo siguiente: ?showNotes=separate-page&amp;print-pdf</p></div></aside></section></div></div><script src="reveal.js-3.7.0/lib/js/head.min.js"></script><script src="reveal.js-3.7.0/js/reveal.js"></script><script>Array.prototype.slice.call(document.querySelectorAll('.slides section')).forEach(function(slide) {
   if (slide.getAttribute('data-background-color')) return;
