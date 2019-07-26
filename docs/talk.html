@@ -192,6 +192,63 @@ class QuarterlyReportGenerator : public HTMLGenerator {
     virtual string generate();
   //...
 };</code></pre></section>
+<section id="_otro_ejemplo_filtrando_listas"><h2>Otro ejemplo, filtrando listas</h2><pre class="highlight listingblock"><code data-noescape="" class="vb language-vb">Public Class ManagerProdFin
+{
+    Public Sub BuscarAltas(ByVal fechadesde As Date, ByVal fechahasta As Date, ByVal solovigentes As Boolean)
+    {
+        '...
+        Dim listaapoderadosaltas = From apo As Apoderados In ListaApoderados Where
+        Convert.ToInt32(apo.aponrocuenta) = Convert.ToInt32(obj.NroCliente)
+        AndAlso Not apo.apotipodocumento.Equals("UBO")
+        AndAlso (Not solovigentes OrElse
+        Not apo.apoFechaVencimiento.HasValue()
+        OrElse apo.apoFechaVencimiento.Value.CompareTo(fechahasta) &gt; 0) Select apo
+        '...
+    }
+}</code></pre></section>
+<section id="_nueva_versión"><h2>Nueva versión</h2><pre class="highlight listingblock"><code data-noescape="" class="vb language-vb">Public Class ManagerProdFin
+{
+    Public Sub BuscarAltas(ByVal fechadesde As Date, ByVal fechahasta As Date, ByVal solovigentes As Boolean)
+    {
+    '...
+        Dim listatitularesaltas As List(Of Titulares) = New List(Of Titulares)
+        listatitularesaltas = AuxManager.titularesvinculados(obj, ListaTitulares)
+    '...
+    }
+}</code></pre></section>
+<section id="_la_clase_wrap"><h2>La clase wrap</h2><pre class="highlight listingblock"><code data-noescape="" class="vb language-vb">Public Class ManagerAuxiliar
+    Public Sub New()
+    End Sub
+    Public Function titularesvinculados(ByVal ObjCustomer As Customer_Account,
+ ByVal archivotitulares As List(Of Titulares)) As List(Of Titulares)
+        Dim archivofiltrado = New List(Of Titulares)
+        Dim listafiltrada = From titu As Titulares In archivotitulares
+        Where Convert.ToInt32(titu.titubase_no) = ObjCustomer.NroClienteAsInt() Select titu
+        For Each T In listafiltrada
+            archivofiltrado.Add(T)
+        Next
+        Return archivofiltrado
+    End Function
+End Class</code></pre></section>
+<section id="_y_el_test"><h2>Y el test</h2><pre class="highlight listingblock"><code data-noescape="" class="vb language-vb">Imports NUnit.Framework
+
+&lt;TestFixture()&gt;
+Public Class ManagerAuxiliarUnitTest
+    &lt;Test()&gt;
+    Public Sub GivenObjCustandtitulares_WhenTvinculados_ThenArchfiltrado()
+        Dim AuxiliaryM As ManagerAuxiliar = New ManagerAuxiliar()
+        Dim titularesSet As List(Of Titulares) = New List(Of Titulares)
+        titularesSet.Add(New Titulares With {.titubase_no = "0000123"})
+        titularesSet.Add(New Titulares With {.titubase_no = "0000124"})
+        titularesSet.Add(New Titulares With {.titubase_no = "0000125"})
+        Dim Customer As Customer_Account = New Customer_Account()
+        Customer.campocustacc = "000124"
+
+        Dim result As List(Of Titulares) = AuxiliaryM.titularesvinculados(Customer, titularesSet)
+
+        Assert.That(result, Has.Count().EqualTo(1))
+    End Sub
+End Class</code></pre></section>
 <section id="_implementando_la_clase_sprout"><h2>Implementando la clase sprout</h2><div class="olist arabic"><ol class="arabic"><li><p>Identifique dónde necesita cambiar su código.</p></li><li><p>¿Se puede agrupar en un método? Piense en un nombre de clase e invoque al método. Comente la invocación.</p></li><li><p>Variables y argumentos.</p></li><li><p>Valores de retorno.</p></li><li><p>Desarrolle la clase sprout usando TDD.</p></li><li><p>Elimine el comentario y haga la invocación.</p></li></ol></div>
 <aside class="notes"><div class="olist arabic"><ol class="arabic"><li><p>Identifique dónde necesita cambiar su código.</p></li><li><p>Si el cambio se puede formular como una secuencia única de declaraciones en un lugar en un método, piense en un buen nombre para una clase que podría hacer ese trabajo. Luego, escriba el código que crearía un objeto de esa clase en ese lugar y llame a un método que haga el trabajo que necesita hacer; Luego comenta esas líneas.</p></li><li><p>Determine qué variables locales necesita del método de origen y conviértalos en argumentos para el constructor de las clases.</p></li><li><p>Determine si la clase brotada deberá devolver los valores al método de origen. Si es así, proporcione un método en la clase que proporcionará esos valores y agregue una llamada en el método de origen para recibir esos valores.</p></li><li><p>Desarrolle primero la prueba de la clase de brotes (vea desarrollo dirigido por pruebas)</p></li><li><p>Elimine el comentario en el método de origen para habilitar la creación de objetos y las llamadas.</p></li></ol></div></aside></section>
 <section id="_ventajas_de_la_clase_sprout"><h2>Ventajas de la clase sprout</h2><div class="ulist"><ul><li><p>Permite avanzar en el desarrollo con más confianza que si haces cambios invasivos.</p></li></ul></div></section>
@@ -209,8 +266,9 @@ class QuarterlyReportGenerator : public HTMLGenerator {
     payDispatcher.pay(this, date, amount);
   }
 }</code></pre></section>
-<section id="_separamos_la_funcionalidad_en_dos_métodos"><h2>Separamos la funcionalidad en dos métodos</h2><pre class="highlight listingblock"><code data-noescape="" class="java language-java">public class Employee {
-  private void dispatchPayment() {
+<section id="_agregar_feature_3"><h2>Agregar feature</h2><div class="paragraph"><p>Actualizar un archivo cada vez que se ejecute un pago a los empleados</p></div></section>
+<section id="_podemos_agregar_la_funcionalidad_al_final_del_método_pero_que_tal_si"><h2>Podemos agregar la funcionalidad al final del método, pero que tal si&#8230;&#8203;</h2><pre class="highlight listingblock"><code data-noescape="" class="java language-java">public class Employee {
+  private void dispatchPayment() { <i class="conum" data-value="1"></i><b>(1)</b>
     Money amount = new Money();
     for (Iterator it = timecards.iterator(); it.hasNext(); ) {
       Timecard card = (Timecard)it.next();
@@ -220,20 +278,74 @@ class QuarterlyReportGenerator : public HTMLGenerator {
     }
     payDispatcher.pay(this, date, amount);
   }
-  public void pay() {
-    logPayment(); <i class="conum" data-value="1"></i><b>(1)</b>
-    dispatchPayment(); <i class="conum" data-value="2"></i><b>(2)</b>
+  public void pay() { <i class="conum" data-value="2"></i><b>(2)</b>
+    logPayment(); <i class="conum" data-value="3"></i><b>(3)</b>
+    dispatchPayment(); <i class="conum" data-value="4"></i><b>(4)</b>
   }
   private void logPayment() {
     //...
   }
+}</code></pre>
+<aside class="notes"><div class="olist arabic"><ol class="arabic"><li><p>Renombramos el método original y lo ponemos como privado</p></li><li><p>Creamos un método que mantenga la firma original y se encargue de llamar al método original y a la nueva funcionalidad</p></li></ol></div></aside></section>
+<section id="_otra_alternativa_es_mantener_las_dos_funcionalidades"><h2>Otra alternativa es mantener las dos funcionalidades</h2><pre class="highlight listingblock"><code data-noescape="" class="java language-java">public class Employee {
+  public void makeLoggedPayment() {
+    logPayment();
+    pay();
+  }
+  public void pay() {
+  //...
+  }
+  private void logPayment() {
+  //...
+  }
 }</code></pre></section>
-<section id="_wrap_class"><h2>Wrap Class</h2></section>
+<section id="_implementando_el_método_wrap_opción_1"><h2>Implementando el método wrap (Opción 1)</h2><div class="olist arabic"><ol class="arabic"><li><p>Identifique el método que necesita cambiar.</p></li><li><p>Si el cambio se hacer como un método independiente, cambie el nombre del método y cree un nuevo método con el mismo nombre y firma que el método anterior.
+<strong>Es importante mantener la firma</strong>.</p></li><li><p>Haga la invocación al método antiguo desde el método nuevo.</p></li><li><p>Desarrolle la nueva funcionalidad usando tests, luego haga la llamada desde desde el nuevo método.</p></li></ol></div></section>
+<section id="_implementando_el_método_wrap_opción_2"><h2>Implementando el método wrap (Opción 2)</h2><div class="olist arabic"><ol class="arabic"><li><p>Identifique el método que necesita cambiar.</p></li><li><p>Si el cambio se puede formular como una sola secuencia de declaraciones en un solo lugar, desarrolle un nuevo método utilizando tests.</p></li><li><p>Cree otro método que llame al método nuevo y al método antiguo.</p></li></ol></div></section>
+<section id="_ventajas_del_método_wrap"><h2>Ventajas del método wrap</h2><div class="ulist"><ul><li><p>A diferencia de los métodos sprout los métodos originales no cambian. Con la técnica sprout se agrega al menos una línea.</p></li><li><p>La nueva funcionalidad es independiente de la funcionalidad existente.</p></li></ul></div></section>
+<section id="_desventajas_del_método_wrap"><h2>Desventajas del método wrap</h2><div class="ulist"><ul><li><p>Dificultad para nombrado de los nuevos métodos.</p></li></ul></div>
+<div class="quoteblock"><blockquote><div class="paragraph"><p>There are only two hard things in Computer Science: cache invalidation and naming things.&#8201;&#8212;&#8201;Phil Karlton.</p></div></blockquote></div></section>
+<section id="_wrap_class_decorator_pattern"><h2>Wrap Class / Decorator pattern</h2><pre class="highlight listingblock"><code data-noescape="" class="java language-java">class LoggingEmployee extends Employee {
+  public LoggingEmployee(Employee e) {
+    employee = e;
+  }
+  public void pay() {
+    logPayment();
+    employee.pay();
+  }
+  private void logPayment() {
+    //...
+  }
+  //...
+}</code></pre>
+<aside class="notes"><p>===
+Esta técnica usa el patrón decorator. Creamos objetos de una clase que envuelve a otra clase y los pasamos. La clase que envuelve debe tener la misma interfaz que la clase que está envolviendo para que los clientes no sepan que están trabajando con un envoltorio. En el ejemplo, <code>LoggingEmployee</code> es un decorador para <code>Employee</code>. Debe tener un método de <code>pay()</code> y cualquier otro método de empleado que use el cliente.
+===</p></aside></section>
+<section id="_wrap_class_sin_decorator_pattern"><h2>Wrap Class / Sin decorator pattern</h2><pre class="highlight listingblock"><code data-noescape="" class="java language-java">class LoggingPayDispatcher {
+  private Employee e;
+  public LoggingPayDispatcher(Employee e) {
+    this.e = e;
+  }
+  public void pay() {
+    employee.pay();
+    logPayment();
+  }
+  private void logPayment() {
+    //...
+  }
+  //...
+}</code></pre>
+<aside class="notes"><p>===
+La clave de la Wrap Class es que se puede agregar un nuevo comportamiento a un sistema sin agregarlo a una clase existente. Cuando hay muchas llamadas al código que se desea envolver, a menudo vale la pena moverse hacia un envoltorio que use el patrón decorator.
+Cuando usa el patrón decorator, se puede agregar de manera transparente un nuevo comportamiento a un conjunto de llamadas existentes, como <code>pay()</code>, todo al mismo tiempo.
+===</p></aside></section>
+<section id="_implementando_la_wrap_class_opción_1_12"><h2>Implementando la Wrap Class (Opción 1) 1/2</h2><div class="olist arabic"><ol class="arabic"><li><p>Identifique un método donde necesita hacer un cambio.</p></li><li><p>Si el cambio como un método independiente, cree una clase que acepte la clase que se va a modificar como un argumento de constructor.</p></li><li><p>Cree un método en esa clase, utilizando tests, e implemente la nueva funcionalidad. Escriba otro método que llame al método nuevo y al método antiguo en la Wrap class.</p></li><li><p>Cree una instancia de la Wrap class en el lugar donde se necesita habilitar la nueva funcionalidad.</p></li></ol></div></section>
+<section id="_tips_para_usar_la_wrap_class"><h2>Tips para usar la Wrap Class</h2><div class="olist arabic"><ol class="arabic"><li><p>El comportamiento que quiero agregar es completamente independiente, y no quiero <strong>contaminar</strong> la clase existente con un comportamiento de bajo nivel o no relacionado.</p></li><li><p>La clase ha crecido tanto que realmente no puedo tolerar ponerla peor. En un caso como este, se crea el wrap solo a manera de base para cambios posteriores.</p></li></ol></div></section>
 <section id="_hay_más_técnicas"><h2>¿Hay más técnicas?</h2></section>
 <section id="_sí_2"><h2>Sí</h2></section>
 <section id="_las_veremos_más_adelante"><h2>Las veremos más adelante&#8230;&#8203;</h2></section>
 <section id="_conclusiones"><h2>Conclusiones</h2><div class="ulist"><ul><li><p>Trabajar con código legacy es difícil</p></li><li><p>Los tests son necesarios</p></li><li><p>Cuando no se puede prevenir la enfermedad, se tiene que tratar</p></li><li><p>Las aplicación de estás técnicas depende del contexto</p></li><li><p>La idea de estás técnicas es apoyarlas con test unitarios, sin aplicar test solo se agrega más código legacy</p></li></ul></div></section>
-<section><div class="ulist"><ul><li><p>Fuentes:</p><div class="ulist"><ul><li><p>Working Effectively with Legacy Code, 1st. Michael Feathers (2004)</p></li><li><p><a href="http://xurxodev.com/trabajando-con-codigo-legado/" class="bare">http://xurxodev.com/trabajando-con-codigo-legado/</a></p></li><li><p><a href="http://xurxodev.com/trabajando-con-codigo-legado-sprout-method-y-sprout-class/" class="bare">http://xurxodev.com/trabajando-con-codigo-legado-sprout-method-y-sprout-class/</a></p></li></ul></div></li></ul></div>
+<section><div class="ulist"><ul><li><p>Fuentes:</p><div class="ulist"><ul><li><p>Working Effectively with Legacy Code, 1st. Michael Feathers (2004)</p></li><li><p><a href="http://xurxodev.com/trabajando-con-codigo-legado/" class="bare">http://xurxodev.com/trabajando-con-codigo-legado/</a></p></li><li><p><a href="http://xurxodev.com/trabajando-con-codigo-legado-sprout-method-y-sprout-class/" class="bare">http://xurxodev.com/trabajando-con-codigo-legado-sprout-method-y-sprout-class/</a></p></li><li><p><a href="https://www.yegor256.com/2016/01/26/defensive-programming.html" class="bare">https://www.yegor256.com/2016/01/26/defensive-programming.html</a></p></li></ul></div></li></ul></div>
 <aside class="notes"><div class="paragraph"><p>Para generar pdf incluir al final de la presentación lo siguiente: ?showNotes=separate-page&amp;print-pdf</p></div></aside></section></div></div><script src="reveal.js-3.7.0/lib/js/head.min.js"></script><script src="reveal.js-3.7.0/js/reveal.js"></script><script>Array.prototype.slice.call(document.querySelectorAll('.slides section')).forEach(function(slide) {
   if (slide.getAttribute('data-background-color')) return;
   // user needs to explicitly say he wants CSS color to override otherwise we might break custom css or theme (#226)

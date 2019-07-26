@@ -382,6 +382,84 @@ class QuarterlyReportGenerator : public HTMLGenerator {
   //...
 };
 ```
+
+== Otro ejemplo, filtrando listas
+
+```vb
+Public Class ManagerProdFin
+{
+    Public Sub BuscarAltas(ByVal fechadesde As Date, ByVal fechahasta As Date, ByVal solovigentes As Boolean)
+    {
+        '...
+        Dim listaapoderadosaltas = From apo As Apoderados In ListaApoderados Where
+        Convert.ToInt32(apo.aponrocuenta) = Convert.ToInt32(obj.NroCliente)
+        AndAlso Not apo.apotipodocumento.Equals("UBO")
+        AndAlso (Not solovigentes OrElse
+        Not apo.apoFechaVencimiento.HasValue()
+        OrElse apo.apoFechaVencimiento.Value.CompareTo(fechahasta) > 0) Select apo
+        '...
+    }
+}
+```
+
+== Nueva versión
+
+```vb
+Public Class ManagerProdFin
+{
+    Public Sub BuscarAltas(ByVal fechadesde As Date, ByVal fechahasta As Date, ByVal solovigentes As Boolean)
+    {
+    '...
+        Dim listatitularesaltas As List(Of Titulares) = New List(Of Titulares)
+        listatitularesaltas = AuxManager.titularesvinculados(obj, ListaTitulares)
+    '...
+    }
+}
+```
+
+== La clase wrap
+
+```vb
+Public Class ManagerAuxiliar
+    Public Sub New()
+    End Sub
+    Public Function titularesvinculados(ByVal ObjCustomer As Customer_Account,
+ ByVal archivotitulares As List(Of Titulares)) As List(Of Titulares)
+        Dim archivofiltrado = New List(Of Titulares)
+        Dim listafiltrada = From titu As Titulares In archivotitulares
+        Where Convert.ToInt32(titu.titubase_no) = ObjCustomer.NroClienteAsInt() Select titu
+        For Each T In listafiltrada
+            archivofiltrado.Add(T)
+        Next
+        Return archivofiltrado
+    End Function
+End Class
+```
+
+== Y el test
+
+```vb
+Imports NUnit.Framework
+
+<TestFixture()>
+Public Class ManagerAuxiliarUnitTest
+    <Test()>
+    Public Sub GivenObjCustandtitulares_WhenTvinculados_ThenArchfiltrado()
+        Dim AuxiliaryM As ManagerAuxiliar = New ManagerAuxiliar()
+        Dim titularesSet As List(Of Titulares) = New List(Of Titulares)
+        titularesSet.Add(New Titulares With {.titubase_no = "0000123"})
+        titularesSet.Add(New Titulares With {.titubase_no = "0000124"})
+        titularesSet.Add(New Titulares With {.titubase_no = "0000125"})
+        Dim Customer As Customer_Account = New Customer_Account()
+        Customer.campocustacc = "000124"
+
+        Dim result As List(Of Titulares) = AuxiliaryM.titularesvinculados(Customer, titularesSet)
+
+        Assert.That(result, Has.Count().EqualTo(1))
+    End Sub
+End Class
+```
+
 == Implementando la clase sprout
 
 1. Identifique dónde necesita cambiar su código.
@@ -425,11 +503,15 @@ public class Employee{
 }
 ```
 
-== Separamos la funcionalidad en dos métodos
+== Agregar feature
+
+Actualizar un archivo cada vez que se ejecute un pago a los empleados
+
+== Podemos agregar la funcionalidad al final del método, pero que tal si...
 
 ```java
 public class Employee {
-  private void dispatchPayment() {
+  private void dispatchPayment() { // <1>
     Money amount = new Money();
     for (Iterator it = timecards.iterator(); it.hasNext(); ) {
       Timecard card = (Timecard)it.next();
@@ -439,9 +521,9 @@ public class Employee {
     }
     payDispatcher.pay(this, date, amount);
   }
-  public void pay() {
-    logPayment(); // <1>
-    dispatchPayment(); // <2>
+  public void pay() { // <2>
+    logPayment(); // <3>
+    dispatchPayment(); // <4>
   }
   private void logPayment() {
     //...
@@ -449,8 +531,112 @@ public class Employee {
 }
 ```
 
+[NOTE.speaker]
+====
+1. Renombramos el método original y lo ponemos como privado
+2. Creamos un método que mantenga la firma original y se encargue de llamar al método original y a la nueva funcionalidad
+====
 
-== Wrap Class
+== Otra alternativa es mantener las dos funcionalidades
+
+```java
+public class Employee {
+  public void makeLoggedPayment() {
+    logPayment();
+    pay();
+  }
+  public void pay() {
+  //...
+  }
+  private void logPayment() {
+  //...
+  }
+}
+```
+
+== Implementando el método wrap (Opción 1)
+
+1. Identifique el método que necesita cambiar.
+2. Si el cambio se hacer como un método independiente, cambie el nombre del método y cree un nuevo método con el mismo nombre y firma que el método anterior.
+**Es importante mantener la firma**.
+3. Haga la invocación al método antiguo desde el método nuevo.
+4. Desarrolle la nueva funcionalidad usando tests, luego haga la llamada desde desde el nuevo método.
+
+== Implementando el método wrap (Opción 2)
+
+1. Identifique el método que necesita cambiar.
+2. Si el cambio se puede formular como una sola secuencia de declaraciones en un solo lugar, desarrolle un nuevo método utilizando tests.
+3. Cree otro método que llame al método nuevo y al método antiguo.
+
+== Ventajas del método wrap
+* A diferencia de los métodos sprout los métodos originales no cambian. Con la técnica sprout se agrega al menos una línea.
+* La nueva funcionalidad es independiente de la funcionalidad existente.
+
+== Desventajas del método wrap
+
+* Dificultad para nombrado de los nuevos métodos.
+
+> There are only two hard things in Computer Science: cache invalidation and naming things. -- Phil Karlton.
+
+== Wrap Class / Decorator pattern
+
+```java
+class LoggingEmployee extends Employee {
+  public LoggingEmployee(Employee e) {
+    employee = e;
+  }
+  public void pay() {
+    logPayment();
+    employee.pay();
+  }
+  private void logPayment() {
+    //...
+  }
+  //...
+}
+```
+
+[NOTE.speaker]
+===
+Esta técnica usa el patrón decorator. Creamos objetos de una clase que envuelve a otra clase y los pasamos. La clase que envuelve debe tener la misma interfaz que la clase que está envolviendo para que los clientes no sepan que están trabajando con un envoltorio. En el ejemplo, `LoggingEmployee` es un decorador para `Employee`. Debe tener un método de `pay()` y cualquier otro método de empleado que use el cliente.
+===
+
+== Wrap Class / Sin decorator pattern
+
+```java
+class LoggingPayDispatcher {
+  private Employee e;
+  public LoggingPayDispatcher(Employee e) {
+    this.e = e;
+  }
+  public void pay() {
+    employee.pay();
+    logPayment();
+  }
+  private void logPayment() {
+    //...
+  }
+  //...
+}
+```
+
+[NOTE.speaker]
+===
+La clave de la Wrap Class es que se puede agregar un nuevo comportamiento a un sistema sin agregarlo a una clase existente. Cuando hay muchas llamadas al código que se desea envolver, a menudo vale la pena moverse hacia un envoltorio que use el patrón decorator.
+Cuando usa el patrón decorator, se puede agregar de manera transparente un nuevo comportamiento a un conjunto de llamadas existentes, como `pay()`, todo al mismo tiempo.
+===
+
+== Implementando la Wrap Class (Opción 1) 1/2
+
+1. Identifique un método donde necesita hacer un cambio.
+2. Si el cambio como un método independiente, cree una clase que acepte la clase que se va a modificar como un argumento de constructor.
+3. Cree un método en esa clase, utilizando tests, e implemente la nueva funcionalidad. Escriba otro método que llame al método nuevo y al método antiguo en la Wrap class.
+4. Cree una instancia de la Wrap class en el lugar donde se necesita habilitar la nueva funcionalidad.
+
+== Tips para usar la Wrap Class
+
+1. El comportamiento que quiero agregar es completamente independiente, y no quiero **contaminar** la clase existente con un comportamiento de bajo nivel o no relacionado.
+2. La clase ha crecido tanto que realmente no puedo tolerar ponerla peor. En un caso como este, se crea el wrap solo a manera de base para cambios posteriores.
 
 == ¿Hay más técnicas?
 
